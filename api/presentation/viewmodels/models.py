@@ -6,4 +6,4 @@ class Pessoa(SQLModel, table=True):
     apelido: str = Field(max_length=32, unique=True)
     nome: str = Field(max_length=100)
     nascimento: str = Date()
-    stack: list[str] | None = Field(default=None)
+    stack: list[str] | None = None
