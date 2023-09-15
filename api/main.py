@@ -3,10 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
 
 from persistence.utils import obter_engine
-from presentation.controllers.pessoa_controller import \
-    prefix as pessoas_prefix
-from presentation.controllers.pessoa_controller import \
-    router as pessoas_router
+from presentation.controllers.pessoa_controller import prefix as pessoas_prefix
+from presentation.controllers.pessoa_controller import router as pessoas_router
 
 
 app = FastAPI()
