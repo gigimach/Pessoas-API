@@ -1,24 +1,32 @@
 from fastapi import APIRouter, HTTPException, status, Header
-from sqlmodel import Session, delete, select
+from psycopg2.errors import UniqueViolation
 
 from application.pessoa_service import PessoaService
 from persistence.utils import obter_engine
 from presentation.viewmodels.models import Pessoa
 
 
-engine = obter_engine
+engine = obter_engine()
 
 router = APIRouter()
-prefix = '/pessoa'
+prefix = '/pessoas'
 
 pesssoa_service = PessoaService()
+
+
+@router.get('/contagem-pessoas', status_code=status.HTTP_200_OK)
+async def total_pessoas():
+    return pesssoa_service.contagem_pessoas()
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def criar_pessoa(pessoa: Pessoa):
 
-    if not pessoa:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Requisição Inválida')
+    if UniqueViolation:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Apelido já existe')
+    
+    if TypeError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Requisição Inválida')
 
     return pesssoa_service.criar_pessoa(pessoa)
      
@@ -33,13 +41,8 @@ async def obter_pessoa(id: int):
     return pessoa
 
 
-@router.get('?t={termo_busca}', status_code=status.HTTP_200_OK)
-async def busca_por_termo(termo: str):
-    pessoas = pesssoa_service.busca_por_termo(termo)
+@router.get('/busca/{termo_busca}', status_code=status.HTTP_200_OK)
+async def busca_por_termo(termo_busca: str):
+    pessoas = pesssoa_service.busca_por_termo(termo_busca)
 
     return pessoas
-
-
-@router.get('/contagem-pessoas', status_code=status)
-async def total_pessoas():
-    return pesssoa_service.contagem_pessoas()
